@@ -1,0 +1,1008 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Why Is The Sky Blue?</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --midnight: #060e1f;
+    --deep-blue: #0d2240;
+    --cerulean: #1a6eb5;
+    --sky: #4da6e8;
+    --pale-sky: #a8d8f0;
+    --white: #f0f8ff;
+    --amber: #f5a623;
+    --rose: #e8614a;
+    --gold: #ffd166;
+    --violet: #7b5ea7;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--midnight);
+    color: var(--white);
+    overflow-x: hidden;
+  }
+
+  /* ── HERO ── */
+  .hero {
+    position: relative;
+    height: 100vh;
+    min-height: 600px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    overflow: hidden;
+  }
+
+  .hero-sky {
+    position: absolute; inset: 0;
+    background: linear-gradient(
+      to bottom,
+      #060e1f 0%,
+      #0d2240 20%,
+      #1a6eb5 55%,
+      #4da6e8 75%,
+      #a8d8f0 90%,
+      #d4edfc 100%
+    );
+    z-index: 0;
+  }
+
+  /* Stars */
+  .stars {
+    position: absolute; inset: 0; z-index: 1;
+  }
+  .star {
+    position: absolute;
+    background: white;
+    border-radius: 50%;
+    animation: twinkle var(--dur) ease-in-out infinite alternate;
+  }
+  @keyframes twinkle {
+    from { opacity: 0.2; transform: scale(0.8); }
+    to   { opacity: 1;   transform: scale(1.2); }
+  }
+
+  /* Sun */
+  .sun {
+    position: absolute;
+    bottom: 18%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80px; height: 80px;
+    border-radius: 50%;
+    background: radial-gradient(circle, #fff9c4, #f5a623 40%, transparent 70%);
+    box-shadow: 0 0 60px 30px rgba(245,166,35,0.4), 0 0 120px 60px rgba(245,166,35,0.15);
+    z-index: 2;
+    animation: sunPulse 4s ease-in-out infinite;
+  }
+  @keyframes sunPulse {
+    0%, 100% { box-shadow: 0 0 60px 30px rgba(245,166,35,0.4), 0 0 120px 60px rgba(245,166,35,0.15); }
+    50%       { box-shadow: 0 0 80px 40px rgba(245,166,35,0.55), 0 0 150px 80px rgba(245,166,35,0.2); }
+  }
+
+  /* Horizon glow */
+  .horizon-glow {
+    position: absolute; bottom: 0; left: 0; right: 0;
+    height: 30%;
+    background: linear-gradient(to top, rgba(168,216,240,0.6), transparent);
+    z-index: 2;
+  }
+
+  .hero-content {
+    position: relative; z-index: 10;
+    padding: 0 1.5rem;
+  }
+
+  .hero-eyebrow {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--pale-sky);
+    margin-bottom: 1.25rem;
+    opacity: 0;
+    animation: fadeUp 0.8s 0.2s forwards;
+  }
+
+  .hero-title {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: clamp(3rem, 10vw, 7rem);
+    font-weight: 700;
+    line-height: 0.95;
+    color: var(--white);
+    text-shadow: 0 2px 40px rgba(10,30,80,0.6);
+    opacity: 0;
+    animation: fadeUp 0.8s 0.4s forwards;
+  }
+
+  .hero-title .accent { color: var(--sky); }
+
+  .hero-subtitle {
+    margin-top: 1.5rem;
+    font-size: clamp(1rem, 2.5vw, 1.25rem);
+    font-weight: 300;
+    color: var(--pale-sky);
+    max-width: 500px;
+    opacity: 0;
+    animation: fadeUp 0.8s 0.6s forwards;
+  }
+
+  .scroll-hint {
+    position: absolute; bottom: 2.5rem; left: 50%; transform: translateX(-50%);
+    z-index: 10; display: flex; flex-direction: column; align-items: center; gap: 0.5rem;
+    font-size: 0.7rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--pale-sky);
+    opacity: 0; animation: fadeUp 0.8s 1s forwards;
+  }
+  .scroll-arrow {
+    width: 1px; height: 40px;
+    background: linear-gradient(to bottom, var(--pale-sky), transparent);
+    animation: scrollPulse 1.5s ease-in-out infinite;
+  }
+  @keyframes scrollPulse {
+    0%, 100% { transform: scaleY(1); opacity: 0.6; }
+    50%       { transform: scaleY(1.3); opacity: 1; }
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ── SECTIONS ── */
+  section {
+    padding: 6rem 1.5rem;
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  .section-label {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 0.7rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--sky);
+    margin-bottom: 1rem;
+  }
+
+  h2 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: clamp(2rem, 5vw, 3.2rem);
+    font-weight: 700;
+    line-height: 1.1;
+    margin-bottom: 1.5rem;
+    color: var(--white);
+  }
+
+  p {
+    font-size: 1.05rem;
+    line-height: 1.75;
+    color: rgba(240,248,255,0.8);
+    margin-bottom: 1.2rem;
+  }
+
+  /* ── SUNLIGHT STRIP ── */
+  .light-strip-wrap {
+    margin: 3rem 0;
+  }
+  .light-strip-label {
+    font-size: 0.75rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: rgba(240,248,255,0.5);
+    margin-bottom: 0.75rem;
+    text-align: center;
+  }
+  .light-strip {
+    height: 60px;
+    border-radius: 12px;
+    background: linear-gradient(
+      to right,
+      #9400d3, #4b0082, #0000ff,
+      #007fff, #00ff00, #ffff00,
+      #ff7f00, #ff0000
+    );
+    position: relative;
+    overflow: visible;
+    box-shadow: 0 0 40px rgba(255,255,255,0.15);
+  }
+  .wavelength-markers {
+    display: flex; justify-content: space-between;
+    margin-top: 0.5rem; padding: 0 4px;
+  }
+  .wm-item { font-size: 0.65rem; color: rgba(240,248,255,0.5); text-align: center; }
+
+  /* ── SCATTERING DEMO ── */
+  .scatter-box {
+    background: rgba(13,34,64,0.6);
+    border: 1px solid rgba(77,166,232,0.2);
+    border-radius: 20px;
+    padding: 2rem;
+    margin: 3rem 0;
+  }
+  .scatter-box h3 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 1.3rem; font-weight: 600;
+    margin-bottom: 0.5rem;
+  }
+  .scatter-box p { font-size: 0.9rem; margin-bottom: 1.5rem; }
+
+  #scatterCanvas {
+    width: 100%; height: 260px;
+    border-radius: 12px;
+    background: #030b18;
+    display: block;
+  }
+
+  .scatter-legend {
+    display: flex; gap: 1.5rem; flex-wrap: wrap;
+    margin-top: 1rem;
+  }
+  .legend-item { display: flex; align-items: center; gap: 0.5rem; font-size: 0.8rem; color: rgba(240,248,255,0.7); }
+  .legend-dot  { width: 10px; height: 10px; border-radius: 50%; }
+
+  /* ── WAVELENGTH INTERACTIVE ── */
+  .wave-section { text-align: center; }
+  .wave-viz {
+    margin: 2rem auto;
+    max-width: 700px;
+  }
+  #waveCanvas {
+    width: 100%; height: 140px;
+    display: block;
+  }
+  .wave-controls {
+    display: flex; justify-content: center; gap: 0.75rem; flex-wrap: wrap;
+    margin-top: 1.5rem;
+  }
+  .wave-btn {
+    padding: 0.55rem 1.1rem;
+    border: none; border-radius: 100px;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 0.85rem; font-weight: 500;
+    cursor: pointer; transition: transform 0.15s, box-shadow 0.15s;
+    color: #000;
+  }
+  .wave-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,0.4); }
+  .wave-btn.active { outline: 3px solid white; outline-offset: 3px; }
+
+  #scatterNote {
+    margin-top: 1.2rem;
+    font-size: 1rem;
+    min-height: 3rem;
+    color: var(--pale-sky);
+    transition: all 0.4s;
+  }
+
+  /* ── WHY CARDS ── */
+  .cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1.25rem;
+    margin-top: 2.5rem;
+  }
+  .card {
+    background: rgba(26,110,181,0.12);
+    border: 1px solid rgba(77,166,232,0.18);
+    border-radius: 16px;
+    padding: 1.75rem 1.5rem;
+    transition: transform 0.2s, border-color 0.2s;
+  }
+  .card:hover { transform: translateY(-4px); border-color: rgba(77,166,232,0.45); }
+  .card-icon { font-size: 2.2rem; margin-bottom: 0.9rem; }
+  .card h3 { font-family: 'Space Grotesk', sans-serif; font-size: 1.05rem; font-weight: 600; margin-bottom: 0.5rem; }
+  .card p  { font-size: 0.88rem; line-height: 1.6; color: rgba(240,248,255,0.65); margin: 0; }
+
+  /* ── SUNSET SECTION ── */
+  .sunset-section { text-align: center; }
+  .sunset-visual {
+    margin: 2.5rem auto;
+    max-width: 700px;
+    height: 220px;
+    border-radius: 20px;
+    position: relative;
+    overflow: hidden;
+  }
+  .sunset-sky {
+    position: absolute; inset: 0;
+    background: linear-gradient(to bottom, #1a0a3d 0%, #6b2fa0 30%, #d4612a 60%, #f5a623 80%, #ffd166 100%);
+  }
+  .sunset-sun {
+    position: absolute;
+    bottom: -20px; left: 50%;
+    transform: translateX(-50%);
+    width: 90px; height: 90px;
+    border-radius: 50%;
+    background: radial-gradient(circle, #fff, #ffd166 30%, #f5a623 65%, transparent 100%);
+    box-shadow: 0 0 60px 30px rgba(245,166,35,0.5);
+  }
+  .sunset-horizon {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 50px;
+    background: linear-gradient(to top, rgba(255,209,102,0.5), transparent);
+  }
+  /* Light path arrow across sunset */
+  .sunset-path {
+    position: absolute;
+    bottom: 50%; left: 5%; right: 5%;
+    height: 2px;
+    background: linear-gradient(to right, transparent, rgba(255,200,80,0.7), transparent);
+    transform: rotate(-3deg);
+  }
+
+  .path-label {
+    position: absolute;
+    bottom: 52%; right: 8%;
+    font-size: 0.65rem;
+    letter-spacing: 0.1em;
+    color: rgba(255,220,120,0.9);
+    text-transform: uppercase;
+  }
+
+  .path-label2 {
+    position: absolute;
+    bottom: 52%; left: 8%;
+    font-size: 0.65rem;
+    letter-spacing: 0.1em;
+    color: rgba(255,220,120,0.9);
+    text-transform: uppercase;
+  }
+
+  /* ── ATMOSPHERE DIAGRAM ── */
+  .atmo-diagram {
+    margin: 2rem 0;
+    border-radius: 16px;
+    overflow: hidden;
+    border: 1px solid rgba(77,166,232,0.15);
+  }
+  #atmoCanvas {
+    width: 100%;
+    height: 320px;
+    display: block;
+  }
+
+  /* ── DIVIDER ── */
+  .divider {
+    width: 60px; height: 2px;
+    background: linear-gradient(to right, var(--cerulean), var(--sky));
+    margin: 0 auto 3rem;
+    border-radius: 2px;
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    text-align: center;
+    padding: 3rem 1.5rem;
+    font-size: 0.8rem;
+    color: rgba(240,248,255,0.3);
+    border-top: 1px solid rgba(77,166,232,0.1);
+  }
+
+  /* ── REVEAL ON SCROLL ── */
+  .reveal {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* ── MOLECULE ANIMATION ── */
+  .molecule-wrap {
+    display: flex; justify-content: center;
+    margin: 2.5rem 0;
+  }
+  #molCanvas {
+    width: 100%; max-width: 700px; height: 200px;
+    display: block;
+  }
+</style>
+</head>
+<body>
+
+<!-- ── HERO ── -->
+<div class="hero">
+  <div class="hero-sky"></div>
+  <div class="stars" id="starsContainer"></div>
+  <div class="sun"></div>
+  <div class="horizon-glow"></div>
+  <div class="hero-content">
+    <p class="hero-eyebrow">A physics story told in light</p>
+    <h1 class="hero-title">Why Is The<br><span class="accent">Sky Blue?</span></h1>
+    <p class="hero-subtitle">A journey through sunlight, atmosphere, and the beautiful physics of color</p>
+  </div>
+  <div class="scroll-hint">
+    <span>Scroll to explore</span>
+    <div class="scroll-arrow"></div>
+  </div>
+</div>
+
+<!-- ── SUNLIGHT SECTION ── -->
+<section class="reveal">
+  <p class="section-label">Chapter 1</p>
+  <h2>Sunlight contains every color</h2>
+  <p>The sun sends out white light — but white light isn't really just one thing. It's a blend of every visible color, each one a different wavelength of electromagnetic radiation traveling at the speed of light toward Earth.</p>
+  <p>Pass sunlight through a prism and those colors split apart, forming the familiar rainbow spectrum from deep violet to rich red.</p>
+  <div class="light-strip-wrap">
+    <p class="light-strip-label">The visible spectrum — 380 nm to 700 nm</p>
+    <div class="light-strip"></div>
+    <div class="wavelength-markers">
+      <div class="wm-item">Violet<br>380nm</div>
+      <div class="wm-item">Blue<br>450nm</div>
+      <div class="wm-item">Green<br>520nm</div>
+      <div class="wm-item">Yellow<br>580nm</div>
+      <div class="wm-item">Orange<br>620nm</div>
+      <div class="wm-item">Red<br>700nm</div>
+    </div>
+  </div>
+</section>
+
+<!-- ── ATMOSPHERE SECTION ── -->
+<section class="reveal">
+  <p class="section-label">Chapter 2</p>
+  <h2>The atmosphere is full of tiny obstacles</h2>
+  <p>Our atmosphere is packed with billions of tiny gas molecules — mostly nitrogen (N₂) and oxygen (O₂). These molecules are unimaginably small, far smaller than the wavelengths of visible light.</p>
+  <p>When a photon of light slams into one of these molecules, something fascinating happens: the photon gets absorbed for a brief instant, then fired back out in a random direction. This is called <strong>Rayleigh scattering</strong>, named after Lord Rayleigh who figured it out in the 1870s.</p>
+  <div class="molecule-wrap">
+    <canvas id="molCanvas"></canvas>
+  </div>
+  <div class="cards">
+    <div class="card">
+      <div class="card-icon">⚛️</div>
+      <h3>Nitrogen (N₂)</h3>
+      <p>Makes up ~78% of Earth's atmosphere. These tiny molecules are the main scatterers of blue light.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">💨</div>
+      <h3>Oxygen (O₂)</h3>
+      <p>About 21% of the atmosphere. Also scatters blue light, contributing to that gorgeous cerulean dome above us.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">🔵</div>
+      <h3>Rayleigh Scattering</h3>
+      <p>Shorter wavelengths scatter much more. Blue light scatters ~5.5× more than red light of the same intensity.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ── WAVELENGTH INTERACTIVE ── -->
+<section class="wave-section reveal">
+  <p class="section-label">Chapter 3 — Interactive</p>
+  <h2>Shorter wavelengths scatter more</h2>
+  <p>Here's the key insight: the amount of scattering depends very strongly on the wavelength of the light. Shorter (bluer) wavelengths scatter far more than longer (redder) ones.</p>
+  <p>Rayleigh's formula shows that scattering is proportional to <strong>1/λ⁴</strong> — so if you halve the wavelength, scattering increases by 16×. Tap each color to see its wave and how much it scatters:</p>
+
+  <div class="wave-viz">
+    <canvas id="waveCanvas"></canvas>
+  </div>
+  <div class="wave-controls" id="waveBtns"></div>
+  <p id="scatterNote">Click a color above to explore!</p>
+</section>
+
+<!-- ── SCATTERING DEMO ── -->
+<section class="reveal">
+  <p class="section-label">Chapter 4 — Live Simulation</p>
+  <h2>Watch light scatter through the atmosphere</h2>
+  <p>This simulation shows photons of different colors traveling through the atmosphere. Notice how blue photons bounce around wildly, filling the sky, while red ones pass mostly straight through.</p>
+  <div class="scatter-box">
+    <canvas id="scatterCanvas"></canvas>
+    <div class="scatter-legend">
+      <div class="legend-item"><div class="legend-dot" style="background:#5b8fff"></div>Blue light — scatters many times</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#00cc88"></div>Green light — scatters somewhat</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#ff5f40"></div>Red light — mostly passes through</div>
+    </div>
+  </div>
+</section>
+
+<!-- ── SO WHY BLUE NOT VIOLET ── -->
+<section class="reveal">
+  <p class="section-label">Chapter 5 — The plot twist</p>
+  <h2>Wait — why not violet?</h2>
+  <p>Here's a fantastic question: if shorter wavelengths scatter more, and violet light (~380 nm) is shorter than blue (~450 nm), shouldn't the sky look violet?</p>
+  <div class="cards">
+    <div class="card">
+      <div class="card-icon">🌞</div>
+      <h3>Less violet to start</h3>
+      <p>The sun emits significantly less violet light than blue light. Our sun's spectrum peaks in the green-yellow region.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">👁️</div>
+      <h3>Human eye sensitivity</h3>
+      <p>Our eyes have three color receptors and are much less sensitive to violet than to blue, green, or red.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">🌌</div>
+      <h3>Violet absorbed high up</h3>
+      <p>Much of the incoming violet light gets absorbed by ozone in the upper atmosphere before it reaches us.</p>
+    </div>
+  </div>
+  <p style="margin-top: 2rem;">The result? Blue wins the visible sky competition — the most intense scattered light that our eyes are tuned to perceive.</p>
+</section>
+
+<!-- ── SUNSET SECTION ── -->
+<section class="sunset-section reveal">
+  <p class="section-label">Chapter 6</p>
+  <h2>And why are sunsets red?</h2>
+  <p>At sunset, sunlight must travel through a much thicker slice of atmosphere to reach you. The blue light scatters away long before it arrives. Only the longer wavelengths — reds, oranges, and pinks — survive the journey.</p>
+  <div class="sunset-visual">
+    <div class="sunset-sky"></div>
+    <div class="sunset-sun"></div>
+    <div class="sunset-horizon"></div>
+    <div class="sunset-path"></div>
+    <div class="path-label">🔵 blue scattered away</div>
+    <div class="path-label2">🔴 red survives →</div>
+  </div>
+  <p>The longer the path through the atmosphere, the more blue is filtered out — which is why the most dramatic sunsets happen when there's dust or smoke in the air, adding even more scattering particles.</p>
+</section>
+
+<!-- ── ATMOSPHERIC DIAGRAM ── -->
+<section class="reveal">
+  <p class="section-label">Summary</p>
+  <h2>The whole story at a glance</h2>
+  <div class="atmo-diagram">
+    <canvas id="atmoCanvas"></canvas>
+  </div>
+  <div class="divider" style="margin: 2.5rem auto;"></div>
+  <p style="text-align:center; font-size: 1.1rem; color: var(--pale-sky);">
+    Every glance at the sky is a reminder that the air itself is doing physics,<br>turning raw sunlight into a canvas of color.
+  </p>
+</section>
+
+<footer>
+  Illustrated with love for the curious mind · Based on Lord Rayleigh's 1871 paper on light scattering · The sky remains wonderful
+</footer>
+
+<script>
+// ── STARS ──
+(function() {
+  const container = document.getElementById('starsContainer');
+  for (let i = 0; i < 120; i++) {
+    const s = document.createElement('div');
+    s.className = 'star';
+    const size = Math.random() * 2 + 0.5;
+    s.style.cssText = `
+      width:${size}px; height:${size}px;
+      top:${Math.random()*60}%;
+      left:${Math.random()*100}%;
+      --dur:${1.5 + Math.random()*3}s;
+      animation-delay:${Math.random()*3}s;
+    `;
+    container.appendChild(s);
+  }
+})();
+
+// ── SCROLL REVEAL ──
+const reveals = document.querySelectorAll('.reveal');
+const ro = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); ro.unobserve(e.target); } });
+}, { threshold: 0.12 });
+reveals.forEach(r => ro.observe(r));
+
+// ── MOLECULE CANVAS ──
+(function() {
+  const canvas = document.getElementById('molCanvas');
+  const ctx = canvas.getContext('2d');
+  let W, H, molecules, photons;
+
+  function resize() {
+    W = canvas.offsetWidth; H = canvas.offsetHeight;
+    canvas.width = W * devicePixelRatio; canvas.height = H * devicePixelRatio;
+    ctx.scale(devicePixelRatio, devicePixelRatio);
+    init();
+  }
+
+  function init() {
+    molecules = [];
+    for (let i = 0; i < 18; i++) {
+      molecules.push({ x: 40 + Math.random()*(W-80), y: 20 + Math.random()*(H-40), r: 5 + Math.random()*4, pulse: Math.random()*Math.PI*2 });
+    }
+    photons = [];
+    for (let i = 0; i < 6; i++) {
+      spawnPhoton();
+    }
+  }
+
+  function spawnPhoton() {
+    const colors = ['#5b8fff','#4da6e8','#7b5ea7'];
+    photons.push({
+      x: -10, y: 20 + Math.random()*(H-40),
+      vx: 2.5 + Math.random()*1.5,
+      vy: (Math.random()-0.5)*0.5,
+      color: colors[Math.floor(Math.random()*colors.length)],
+      bounced: false, alpha: 1
+    });
+  }
+
+  function draw(t) {
+    ctx.clearRect(0,0,W,H);
+
+    // molecules
+    molecules.forEach(m => {
+      m.pulse += 0.03;
+      const glow = ctx.createRadialGradient(m.x,m.y,0,m.x,m.y,m.r*2.5);
+      glow.addColorStop(0,'rgba(77,166,232,0.35)');
+      glow.addColorStop(1,'rgba(77,166,232,0)');
+      ctx.fillStyle = glow;
+      ctx.beginPath(); ctx.arc(m.x,m.y,m.r*2.5,0,Math.PI*2); ctx.fill();
+      ctx.fillStyle = 'rgba(168,216,240,0.85)';
+      ctx.beginPath(); ctx.arc(m.x,m.y,m.r + Math.sin(m.pulse)*1.2,0,Math.PI*2); ctx.fill();
+    });
+
+    // photons
+    photons.forEach((p,i) => {
+      if (p.x > W + 20) { photons.splice(i,1); spawnPhoton(); return; }
+      p.x += p.vx; p.y += p.vy;
+      if (p.y < 5 || p.y > H-5) p.vy *= -1;
+
+      // scatter off nearby molecule
+      if (!p.bounced) {
+        molecules.forEach(m => {
+          const dx = p.x - m.x, dy = p.y - m.y;
+          if (Math.sqrt(dx*dx+dy*dy) < m.r + 8) {
+            p.vy = (Math.random()-0.5)*4;
+            p.bounced = true;
+            setTimeout(() => { p.bounced = false; }, 300);
+          }
+        });
+      }
+
+      // draw photon
+      const trail = ctx.createLinearGradient(p.x-20,p.y,p.x,p.y);
+      trail.addColorStop(0,'transparent');
+      trail.addColorStop(1,p.color);
+      ctx.strokeStyle = trail; ctx.lineWidth = 2;
+      ctx.beginPath(); ctx.moveTo(p.x-20,p.y); ctx.lineTo(p.x,p.y); ctx.stroke();
+      ctx.fillStyle = p.color;
+      ctx.shadowColor = p.color; ctx.shadowBlur = 6;
+      ctx.beginPath(); ctx.arc(p.x,p.y,3,0,Math.PI*2); ctx.fill();
+      ctx.shadowBlur = 0;
+    });
+
+    requestAnimationFrame(draw);
+  }
+
+  window.addEventListener('resize', resize);
+  resize();
+  requestAnimationFrame(draw);
+})();
+
+// ── WAVE CANVAS ──
+(function() {
+  const canvas = document.getElementById('waveCanvas');
+  const ctx = canvas.getContext('2d');
+  const note = document.getElementById('scatterNote');
+  const btnsWrap = document.getElementById('waveBtns');
+
+  const colors = [
+    { name:'Violet', hex:'#9400d3', nm:400, scatter:5.9, label:'Scatters the most — but the sun sends less violet, and our eyes are less sensitive to it.' },
+    { name:'Blue',   hex:'#4169e1', nm:450, scatter:5.5, label:'Scatters very strongly — the dominant color we perceive in the sky. 🔵' },
+    { name:'Cyan',   hex:'#00bcd4', nm:490, scatter:3.8, label:'Scatters quite a bit, contributing to the lighter, paler parts of the sky.' },
+    { name:'Green',  hex:'#00c853', nm:530, scatter:2.5, label:'Moderate scattering — why the sky sometimes has a greenish tint near the horizon.' },
+    { name:'Yellow', hex:'#ffd600', nm:580, scatter:1.4, label:'Low scattering — passes through fairly easily.' },
+    { name:'Red',    hex:'#e53935', nm:700, scatter:1.0, label:'Scatters the least — it travels straight through, giving us red sunsets.' },
+  ];
+
+  let W, H, selected = 1, phase = 0, animId;
+
+  function resize() {
+    W = canvas.offsetWidth; H = canvas.offsetHeight;
+    canvas.width = W * devicePixelRatio; canvas.height = H * devicePixelRatio;
+    ctx.scale(devicePixelRatio, devicePixelRatio);
+  }
+
+  // build buttons
+  colors.forEach((c,i) => {
+    const btn = document.createElement('button');
+    btn.className = 'wave-btn' + (i===1?' active':'');
+    btn.textContent = c.name;
+    btn.style.background = c.hex;
+    btn.style.color = (c.name==='Violet'||c.name==='Blue'||c.name==='Red') ? '#fff' : '#000';
+    btn.addEventListener('click', () => {
+      selected = i;
+      document.querySelectorAll('.wave-btn').forEach((b,j) => b.classList.toggle('active', j===i));
+      note.textContent = c.label;
+    });
+    btnsWrap.appendChild(btn);
+  });
+  note.textContent = colors[selected].label;
+
+  function draw() {
+    ctx.clearRect(0,0,W,H);
+    const c = colors[selected];
+    phase += 0.06;
+
+    // wavelength visually: shorter = more waves (tighter)
+    const freq = 0.015 + (700 - c.nm) * 0.00015;
+    const amp  = 20 + (c.scatter - 1) * 8;
+
+    ctx.strokeStyle = c.hex;
+    ctx.lineWidth = 2.5;
+    ctx.shadowColor = c.hex;
+    ctx.shadowBlur = 10;
+    ctx.beginPath();
+    for (let x = 0; x <= W; x++) {
+      const y = H/2 + amp * Math.sin(freq * x * 8 - phase);
+      x === 0 ? ctx.moveTo(x,y) : ctx.lineTo(x,y);
+    }
+    ctx.stroke();
+    ctx.shadowBlur = 0;
+
+    // scatter dots flying off
+    const numDots = Math.round(c.scatter * 2);
+    for (let d = 0; d < numDots; d++) {
+      const progress = ((phase * 0.3 + d * 0.7) % (Math.PI * 2)) / (Math.PI * 2);
+      const x = progress * W;
+      const baseY = H/2 + amp * Math.sin(freq * x * 8 - phase);
+      const offsetY = Math.sin(phase * 2 + d) * 30 * c.scatter/5;
+      const offsetX = Math.cos(phase + d*2) * 15;
+      ctx.globalAlpha = 0.6 * (1 - progress * 0.5);
+      ctx.fillStyle = c.hex;
+      ctx.shadowColor = c.hex; ctx.shadowBlur = 6;
+      ctx.beginPath(); ctx.arc(x+offsetX, baseY+offsetY, 3, 0, Math.PI*2); ctx.fill();
+      ctx.shadowBlur = 0;
+    }
+    ctx.globalAlpha = 1;
+
+    animId = requestAnimationFrame(draw);
+  }
+
+  window.addEventListener('resize', resize);
+  resize();
+  draw();
+})();
+
+// ── SCATTER SIMULATION ──
+(function() {
+  const canvas = document.getElementById('scatterCanvas');
+  const ctx = canvas.getContext('2d');
+  let W, H;
+  const particles = [];
+  const moleculePositions = [];
+
+  function resize() {
+    W = canvas.offsetWidth; H = canvas.offsetHeight;
+    if (!W || !H) { W = canvas.parentElement.offsetWidth || 600; H = 260; }
+    canvas.width = W * devicePixelRatio; canvas.height = H * devicePixelRatio;
+    ctx.scale(devicePixelRatio, devicePixelRatio);
+    initMolecules();
+    initParticles();
+  }
+
+  function initMolecules() {
+    moleculePositions.length = 0;
+    const count = Math.floor(W / 60);
+    for (let i = 0; i < count * 3; i++) {
+      moleculePositions.push({ x: Math.random()*W, y: Math.random()*H });
+    }
+  }
+
+  const COLORS = [
+    { color:'#5b8fff', scatterStr: 5.5, alpha: 0.9 },
+    { color:'#00cc88', scatterStr: 2.5, alpha: 0.85 },
+    { color:'#ff5f40', scatterStr: 1.0, alpha: 0.9 },
+  ];
+
+  function spawnParticle() {
+    const c = COLORS[Math.floor(Math.random()*COLORS.length)];
+    return {
+      x: 0, y: H * 0.05 + Math.random() * H * 0.9,
+      vx: 2.5 + Math.random(),
+      vy: (Math.random()-0.5) * 0.3,
+      color: c.color,
+      scatter: c.scatterStr,
+      alpha: c.alpha,
+      cooldown: 0,
+      trail: []
+    };
+  }
+
+  function initParticles() {
+    particles.length = 0;
+    for (let i = 0; i < 24; i++) {
+      const p = spawnParticle();
+      p.x = Math.random() * W;
+      particles.push(p);
+    }
+  }
+
+  function draw() {
+    ctx.fillStyle = 'rgba(3,11,24,0.3)';
+    ctx.fillRect(0,0,W,H);
+
+    // draw faint molecules
+    moleculePositions.forEach(m => {
+      ctx.fillStyle = 'rgba(77,140,200,0.12)';
+      ctx.beginPath(); ctx.arc(m.x,m.y,4,0,Math.PI*2); ctx.fill();
+    });
+
+    particles.forEach((p,i) => {
+      p.trail.push({x:p.x,y:p.y});
+      if (p.trail.length > 12) p.trail.shift();
+
+      // draw trail
+      p.trail.forEach((pt,ti) => {
+        ctx.globalAlpha = (ti/p.trail.length) * 0.4;
+        ctx.fillStyle = p.color;
+        ctx.beginPath(); ctx.arc(pt.x,pt.y,1.5,0,Math.PI*2); ctx.fill();
+      });
+      ctx.globalAlpha = 1;
+
+      // draw particle
+      ctx.shadowColor = p.color; ctx.shadowBlur = 8;
+      ctx.fillStyle = p.color;
+      ctx.beginPath(); ctx.arc(p.x,p.y,3,0,Math.PI*2); ctx.fill();
+      ctx.shadowBlur = 0;
+
+      // move
+      p.x += p.vx; p.y += p.vy;
+      p.cooldown = Math.max(0, p.cooldown - 1);
+      if (p.y < 2 || p.y > H-2) p.vy *= -1;
+
+      // maybe scatter off molecule
+      if (p.cooldown === 0) {
+        moleculePositions.forEach(m => {
+          const dx = p.x-m.x, dy = p.y-m.y;
+          if (dx*dx+dy*dy < 20*20) {
+            const chance = p.scatter / 20;
+            if (Math.random() < chance) {
+              p.vy = (Math.random()-0.5) * 3;
+              p.cooldown = 20;
+            }
+          }
+        });
+      }
+
+      // respawn
+      if (p.x > W + 10 || p.y < -10 || p.y > H+10) {
+        const np = spawnParticle();
+        particles[i] = np;
+      }
+    });
+
+    requestAnimationFrame(draw);
+  }
+
+  window.addEventListener('resize', resize);
+  resize();
+  draw();
+})();
+
+// ── ATMOSPHERE DIAGRAM CANVAS ──
+(function() {
+  const canvas = document.getElementById('atmoCanvas');
+  const ctx = canvas.getContext('2d');
+  let W, H, t = 0;
+
+  function resize() {
+    W = canvas.offsetWidth; H = canvas.offsetHeight;
+    canvas.width = W * devicePixelRatio; canvas.height = H * devicePixelRatio;
+    ctx.scale(devicePixelRatio, devicePixelRatio);
+  }
+
+  function draw() {
+    ctx.clearRect(0,0,W,H);
+    t += 0.02;
+
+    // Atmosphere gradient (sky layers)
+    const grad = ctx.createLinearGradient(0,0,0,H);
+    grad.addColorStop(0,   '#030b18');
+    grad.addColorStop(0.15,'#0d2240');
+    grad.addColorStop(0.45,'#1a6eb5');
+    grad.addColorStop(0.75,'#4da6e8');
+    grad.addColorStop(1,   '#a8d8f0');
+    ctx.fillStyle = grad;
+    ctx.fillRect(0,0,W,H);
+
+    // Earth surface
+    ctx.fillStyle = '#1a3a1a';
+    ctx.fillRect(0, H-30, W, 30);
+    ctx.fillStyle = '#2d5a2d';
+    ctx.fillRect(0, H-32, W, 4);
+
+    // Atmosphere label lines
+    const layers = [
+      { y:0.05, label:'Space', color:'rgba(240,248,255,0.3)' },
+      { y:0.18, label:'Thermosphere', color:'rgba(240,248,255,0.35)' },
+      { y:0.35, label:'Mesosphere', color:'rgba(168,216,240,0.4)' },
+      { y:0.52, label:'Stratosphere (ozone)', color:'rgba(100,180,220,0.5)' },
+      { y:0.70, label:'Troposphere — where scattering happens', color:'rgba(77,166,232,0.6)' },
+    ];
+    layers.forEach(l => {
+      ctx.strokeStyle = l.color; ctx.lineWidth = 1; ctx.setLineDash([4,6]);
+      ctx.beginPath(); ctx.moveTo(0,l.y*H); ctx.lineTo(W,l.y*H); ctx.stroke();
+      ctx.setLineDash([]);
+      ctx.fillStyle = l.color;
+      ctx.font = `12px Inter`; ctx.textAlign = 'right';
+      ctx.fillText(l.label, W-12, l.y*H - 5);
+    });
+
+    // Sun (top left)
+    const sunX = W * 0.08, sunY = H * 0.06;
+    const sunGrad = ctx.createRadialGradient(sunX,sunY,0,sunX,sunY,30);
+    sunGrad.addColorStop(0,'#fff');
+    sunGrad.addColorStop(0.4,'#ffd166');
+    sunGrad.addColorStop(1,'transparent');
+    ctx.fillStyle = sunGrad;
+    ctx.beginPath(); ctx.arc(sunX,sunY,30,0,Math.PI*2); ctx.fill();
+
+    // Main white beam downward
+    ctx.globalAlpha = 0.35;
+    ctx.strokeStyle = 'white'; ctx.lineWidth = 10;
+    ctx.setLineDash([]);
+    ctx.beginPath(); ctx.moveTo(sunX+20, sunY+25); ctx.lineTo(W*0.5, H-30); ctx.stroke();
+    ctx.globalAlpha = 1;
+
+    // Scattered blue rays flying off sideways (animated)
+    const scatterOrigins = [0.25, 0.40, 0.55, 0.68];
+    scatterOrigins.forEach((frac, si) => {
+      const mainX = sunX + (W*0.5 - sunX) * frac;
+      const mainY = sunY + 25 + (H - 30 - sunY - 25) * frac;
+      const numRays = 5;
+      for (let r = 0; r < numRays; r++) {
+        const angle = (-Math.PI/2) + (r - numRays/2) * 0.55 + Math.sin(t + si + r) * 0.1;
+        const len   = 40 + 20 * Math.sin(t * 1.5 + si * 0.7 + r);
+        const alpha = 0.5 + 0.3 * Math.sin(t * 2 + r + si);
+        ctx.globalAlpha = alpha;
+        ctx.strokeStyle = '#4da6e8'; ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        ctx.moveTo(mainX, mainY);
+        ctx.lineTo(mainX + Math.cos(angle)*len, mainY + Math.sin(angle)*len);
+        ctx.stroke();
+      }
+      ctx.globalAlpha = 1;
+      ctx.fillStyle = '#4da6e8'; ctx.shadowColor = '#4da6e8'; ctx.shadowBlur = 8;
+      ctx.beginPath(); ctx.arc(mainX, mainY, 4, 0, Math.PI*2); ctx.fill();
+      ctx.shadowBlur = 0;
+    });
+
+    // Red beam surviving to ground
+    ctx.globalAlpha = 0.7;
+    ctx.strokeStyle = '#ff5f40'; ctx.lineWidth = 2;
+    ctx.setLineDash([8,4]);
+    ctx.beginPath(); ctx.moveTo(sunX+20,sunY+25); ctx.lineTo(W*0.5,H-30); ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.globalAlpha = 1;
+
+    // Legend
+    const lx = W * 0.05, ly = H * 0.82;
+    ctx.fillStyle = 'rgba(0,0,0,0.4)';
+    const rx=lx-10,ry=ly-16,rw=220,rh=70,rr=8;
+    ctx.beginPath();
+    ctx.moveTo(rx+rr,ry); ctx.lineTo(rx+rw-rr,ry);
+    ctx.arcTo(rx+rw,ry,rx+rw,ry+rr,rr);
+    ctx.lineTo(rx+rw,ry+rh-rr);
+    ctx.arcTo(rx+rw,ry+rh,rx+rw-rr,ry+rh,rr);
+    ctx.lineTo(rx+rr,ry+rh);
+    ctx.arcTo(rx,ry+rh,rx,ry+rh-rr,rr);
+    ctx.lineTo(rx,ry+rr);
+    ctx.arcTo(rx,ry,rx+rr,ry,rr);
+    ctx.closePath(); ctx.fill();
+    [['#fff','Sunlight (white)'],['#4da6e8','Blue light — scattered'],['#ff5f40','Red light — passes through']].forEach(([col,txt],i)=>{
+      ctx.fillStyle = col; ctx.beginPath(); ctx.arc(lx+6,ly+i*20,5,0,Math.PI*2); ctx.fill();
+      ctx.fillStyle = 'rgba(240,248,255,0.8)'; ctx.font='11px Inter'; ctx.textAlign='left';
+      ctx.fillText(txt, lx+18, ly+4+i*20);
+    });
+
+    requestAnimationFrame(draw);
+  }
+
+  window.addEventListener('resize', resize);
+  resize();
+  draw();
+})();
+</script>
+</body>
+</html>
