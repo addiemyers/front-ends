@@ -1,0 +1,927 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>An Explanation Page: Explained</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --void: #0f0f14;
+  --void2: #16161e;
+  --parchment: #e8e0d4;
+  --parchment-dim: #a09890;
+  --red: #c4432a;
+  --blue: #4a9eff;
+  --gold: #f5c842;
+  --green: #52c47a;
+  --indent: 28px;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Inter', sans-serif;
+  background: var(--void);
+  color: var(--parchment);
+  overflow-x: hidden;
+  min-height: 100vh;
+}
+
+/* ── HERO ── */
+.hero {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  position: relative;
+  overflow: hidden;
+  padding: 4rem 2rem;
+}
+
+/* Recursive background grid */
+.hero::before {
+  content: '';
+  position: absolute; inset: 0;
+  background-image:
+    linear-gradient(rgba(74,158,255,0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(74,158,255,0.04) 1px, transparent 1px);
+  background-size: 40px 40px;
+  z-index: 0;
+}
+
+.hero-inner {
+  position: relative; z-index: 1;
+  text-align: center;
+  max-width: 820px;
+}
+
+.hero-eyebrow {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.7rem;
+  color: var(--red);
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  margin-bottom: 1.5rem;
+}
+
+.hero-title {
+  font-family: 'DM Serif Display', serif;
+  font-size: clamp(2.8rem, 8vw, 6rem);
+  line-height: 1.0;
+  color: var(--parchment);
+  margin-bottom: 1rem;
+}
+
+.hero-title em {
+  font-style: italic;
+  color: var(--gold);
+}
+
+.hero-subtitle {
+  font-size: 1.1rem;
+  color: var(--parchment-dim);
+  line-height: 1.7;
+  max-width: 560px;
+  margin: 0 auto 3rem;
+}
+
+/* The infinite mirror preview */
+.mirror-frame {
+  width: min(480px, 90vw);
+  margin: 0 auto 3rem;
+  position: relative;
+}
+
+.mirror-outer {
+  border: 1px solid rgba(74,158,255,0.3);
+  border-radius: 8px;
+  background: var(--void2);
+  overflow: hidden;
+  position: relative;
+  cursor: pointer;
+  transition: border-color 0.2s;
+  box-shadow: 0 0 60px rgba(74,158,255,0.08), inset 0 0 40px rgba(0,0,0,0.4);
+}
+.mirror-outer:hover { border-color: rgba(74,158,255,0.7); }
+
+.mirror-header {
+  background: rgba(74,158,255,0.08);
+  border-bottom: 1px solid rgba(74,158,255,0.15);
+  padding: 0.6rem 1rem;
+  display: flex; align-items: center; gap: 0.5rem;
+}
+.dot { width: 10px; height: 10px; border-radius: 50%; }
+.dot-r { background: #ff5f57; }
+.dot-y { background: #ffbd2e; }
+.dot-g { background: #28c840; }
+.mirror-title-bar {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.65rem;
+  color: var(--parchment-dim);
+  margin-left: auto; margin-right: auto;
+}
+
+#mirrorCanvas {
+  display: block;
+  width: 100%;
+  height: 260px;
+}
+
+.mirror-hint {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.65rem;
+  color: var(--blue);
+  text-align: center;
+  margin-top: 0.75rem;
+  opacity: 0.7;
+  animation: blink 2s step-end infinite;
+}
+@keyframes blink { 0%,100%{opacity:0.7} 50%{opacity:0.2} }
+
+.scroll-cue {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.7rem;
+  color: var(--parchment-dim);
+  display: flex; flex-direction: column; align-items: center; gap: 0.5rem;
+}
+.scroll-line {
+  width: 1px; height: 48px;
+  background: linear-gradient(to bottom, var(--parchment-dim), transparent);
+  animation: grow 1.5s ease-in-out infinite;
+}
+@keyframes grow { 0%,100%{transform:scaleY(0.6);opacity:0.4} 50%{transform:scaleY(1);opacity:1} }
+
+/* ── CALL STACK SECTIONS ── */
+.stack-container {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 0 1.5rem 6rem;
+}
+
+.stack-frame {
+  position: relative;
+  margin-bottom: 0;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+.stack-frame.visible { opacity: 1; transform: translateY(0); }
+
+/* Vertical line connecting frames */
+.stack-frame::before {
+  content: '';
+  position: absolute;
+  left: calc(var(--depth, 0) * var(--indent) + 11px);
+  top: 0; bottom: 0;
+  width: 1px;
+  background: linear-gradient(to bottom, transparent, var(--frame-color, var(--blue)) 10%, var(--frame-color, var(--blue)) 90%, transparent);
+  opacity: 0.3;
+}
+
+.frame-inner {
+  margin-left: calc(var(--depth, 0) * var(--indent));
+  padding: 2.5rem 0 2.5rem 2rem;
+  border-left: 1px solid rgba(255,255,255,0.06);
+  position: relative;
+}
+
+/* Frame marker */
+.frame-marker {
+  position: absolute;
+  left: -5px; top: 2.5rem;
+  width: 10px; height: 10px;
+  border-radius: 50%;
+  background: var(--frame-color, var(--blue));
+  box-shadow: 0 0 12px var(--frame-color, var(--blue));
+}
+
+.frame-tag {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.65rem;
+  color: var(--frame-color, var(--blue));
+  letter-spacing: 0.1em;
+  margin-bottom: 0.75rem;
+  display: flex; align-items: center; gap: 0.5rem;
+}
+.frame-tag::before {
+  content: '';
+  display: inline-block;
+  width: 20px; height: 1px;
+  background: var(--frame-color, var(--blue));
+  opacity: 0.5;
+}
+
+h2 {
+  font-family: 'DM Serif Display', serif;
+  font-size: clamp(1.7rem, 4vw, 2.6rem);
+  line-height: 1.15;
+  color: var(--parchment);
+  margin-bottom: 1.25rem;
+}
+h2 em { font-style: italic; color: var(--gold); }
+
+.body-text {
+  font-size: 1rem;
+  line-height: 1.8;
+  color: rgba(232,224,212,0.75);
+  margin-bottom: 1.2rem;
+  max-width: 620px;
+}
+
+/* ── CODE BLOCK ── */
+.code-block {
+  background: #0a0a0f;
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 8px;
+  padding: 1.25rem 1.5rem;
+  margin: 1.5rem 0;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.82rem;
+  line-height: 1.8;
+  position: relative;
+  overflow-x: auto;
+}
+.code-block .kw { color: var(--red); }
+.code-block .fn { color: var(--blue); }
+.code-block .arg { color: var(--gold); }
+.code-block .cm { color: #4a5060; }
+.code-block .str { color: var(--green); }
+.code-block .ret { color: var(--parchment-dim); }
+.code-label {
+  position: absolute; top: 0.75rem; right: 1rem;
+  font-size: 0.6rem; color: rgba(255,255,255,0.2);
+  letter-spacing: 0.1em; text-transform: uppercase;
+}
+
+/* ── ANATOMY DIAGRAM ── */
+.anatomy {
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 10px;
+  padding: 1.75rem;
+  margin: 1.5rem 0;
+  position: relative;
+  background: rgba(255,255,255,0.015);
+}
+.anatomy-title {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.65rem;
+  color: var(--parchment-dim);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-bottom: 1.25rem;
+}
+
+.page-mock {
+  background: #1a1a24;
+  border-radius: 6px;
+  overflow: hidden;
+  border: 1px solid rgba(255,255,255,0.07);
+}
+.mock-bar {
+  background: rgba(255,255,255,0.04);
+  height: 36px;
+  display: flex; align-items: center;
+  padding: 0 1rem; gap: 0.4rem;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+.mock-content { padding: 1rem 1.25rem; }
+
+.part {
+  display: flex; gap: 1rem;
+  margin-bottom: 1rem;
+  align-items: flex-start;
+  cursor: default;
+  border-radius: 6px;
+  padding: 0.5rem;
+  transition: background 0.15s;
+}
+.part:hover { background: rgba(255,255,255,0.04); }
+.part-bar {
+  width: 3px; border-radius: 2px; flex-shrink: 0;
+  align-self: stretch; min-height: 40px;
+}
+.part-lines { flex: 1; }
+.line-fake {
+  height: 8px; border-radius: 4px;
+  background: rgba(255,255,255,0.1);
+  margin-bottom: 5px;
+}
+.line-fake.short { width: 40%; }
+.line-fake.med   { width: 70%; }
+.line-fake.full  { width: 95%; }
+.line-fake.sm    { height: 5px; background: rgba(255,255,255,0.05); }
+.part-label {
+  flex-shrink: 0; width: 130px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.7rem;
+  color: var(--parchment-dim);
+  padding-top: 3px;
+}
+.part-label span { display: block; font-size: 0.6rem; color: rgba(255,255,255,0.25); margin-top: 2px; }
+
+/* ── INTERACTIVE STACK VISUALIZER ── */
+.stack-viz {
+  margin: 1.5rem 0;
+  border: 1px solid rgba(245,200,66,0.2);
+  border-radius: 10px;
+  padding: 1.5rem;
+  background: rgba(245,200,66,0.02);
+}
+.stack-viz-title {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.65rem;
+  color: var(--gold);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-bottom: 1.25rem;
+}
+
+.viz-controls {
+  display: flex; gap: 0.6rem; flex-wrap: wrap; margin-bottom: 1.25rem;
+}
+.viz-btn {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.75rem;
+  padding: 0.45rem 1rem;
+  border-radius: 5px;
+  border: 1px solid;
+  cursor: pointer;
+  transition: all 0.15s;
+  background: transparent;
+}
+.viz-btn.push { color: var(--green); border-color: var(--green); }
+.viz-btn.push:hover { background: rgba(82,196,122,0.1); }
+.viz-btn.pop  { color: var(--red); border-color: var(--red); }
+.viz-btn.pop:hover { background: rgba(196,67,42,0.1); }
+.viz-btn.reset { color: var(--parchment-dim); border-color: rgba(255,255,255,0.2); }
+.viz-btn.reset:hover { background: rgba(255,255,255,0.05); }
+
+#callStack {
+  display: flex; flex-direction: column-reverse;
+  gap: 4px; min-height: 80px;
+  position: relative;
+}
+.frame-card {
+  background: var(--void2);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-left: 3px solid var(--blue);
+  border-radius: 4px;
+  padding: 0.6rem 1rem;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.75rem;
+  display: flex; justify-content: space-between; align-items: center;
+  animation: slideIn 0.25s ease;
+  transition: opacity 0.2s, transform 0.2s;
+}
+.frame-card.top { border-left-color: var(--gold); }
+.frame-card.returning { opacity: 0; transform: translateX(30px); }
+@keyframes slideIn { from { opacity: 0; transform: translateX(-16px); } to { opacity: 1; transform: translateX(0); } }
+.frame-name { color: var(--blue); }
+.frame-card.top .frame-name { color: var(--gold); }
+.frame-depth { color: rgba(255,255,255,0.25); font-size: 0.65rem; }
+.stack-empty {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.75rem;
+  color: rgba(255,255,255,0.2);
+  padding: 1rem; text-align: center;
+}
+#stackLog {
+  margin-top: 0.75rem;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.7rem;
+  color: rgba(255,255,255,0.35);
+  min-height: 1.2rem;
+}
+
+/* ── THE TWIST SECTION ── */
+.twist-section {
+  padding: 4rem 2rem;
+  text-align: center;
+  background: linear-gradient(to bottom, transparent, rgba(196,67,42,0.04), transparent);
+  border-top: 1px solid rgba(255,255,255,0.05);
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+  margin: 3rem 0;
+}
+.twist-section h2 {
+  font-size: clamp(1.8rem, 5vw, 3rem);
+  margin-bottom: 1rem;
+}
+.twist-section .body-text {
+  margin: 0 auto 2rem;
+  text-align: left;
+}
+
+/* Base case card */
+.base-case {
+  display: inline-flex; align-items: flex-start; gap: 1rem;
+  background: rgba(82,196,122,0.06);
+  border: 1px solid rgba(82,196,122,0.25);
+  border-radius: 10px;
+  padding: 1.25rem 1.5rem;
+  text-align: left;
+  max-width: 540px;
+}
+.base-icon { font-size: 1.8rem; flex-shrink: 0; }
+.base-text h3 {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.8rem;
+  color: var(--green);
+  margin-bottom: 0.4rem;
+  letter-spacing: 0.05em;
+}
+.base-text p { font-size: 0.9rem; color: rgba(232,224,212,0.7); line-height: 1.6; }
+
+/* ── DROSTE COUNTER ── */
+.droste-counter {
+  font-family: 'DM Serif Display', serif;
+  font-size: clamp(4rem, 15vw, 9rem);
+  line-height: 1;
+  color: var(--red);
+  margin: 2rem 0 0.5rem;
+  opacity: 0.12;
+  user-select: none;
+  letter-spacing: -0.04em;
+}
+
+/* ── RETURN ARROWS ── */
+.return-arrow {
+  display: flex; align-items: center; gap: 0.75rem;
+  margin: 0.5rem 0 0.5rem calc(var(--depth, 0) * var(--indent));
+  padding-left: 2rem;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.7rem;
+  color: var(--parchment-dim);
+  opacity: 0.5;
+}
+.return-arrow::before {
+  content: '↩';
+  color: var(--gold);
+  font-size: 1rem;
+}
+
+/* ── FOOTER ── */
+footer {
+  text-align: center;
+  padding: 4rem 2rem 3rem;
+  border-top: 1px solid rgba(255,255,255,0.05);
+}
+.footer-title {
+  font-family: 'DM Serif Display', serif;
+  font-size: clamp(1.5rem, 4vw, 2.5rem);
+  color: var(--parchment);
+  margin-bottom: 0.75rem;
+}
+.footer-code {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.8rem;
+  color: var(--parchment-dim);
+  margin-bottom: 2rem;
+}
+.footer-note {
+  font-size: 0.8rem;
+  color: rgba(255,255,255,0.2);
+}
+
+/* ── TOOLTIP ── */
+.has-tip {
+  border-bottom: 1px dashed rgba(74,158,255,0.5);
+  cursor: help;
+  position: relative;
+}
+.tip {
+  display: none;
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 50%; transform: translateX(-50%);
+  background: #1e1e2a;
+  border: 1px solid rgba(74,158,255,0.3);
+  border-radius: 6px;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.75rem;
+  color: var(--parchment);
+  white-space: nowrap;
+  z-index: 100;
+  font-family: 'Inter', sans-serif;
+  font-style: normal;
+  pointer-events: none;
+}
+.has-tip:hover .tip { display: block; }
+</style>
+</head>
+<body>
+
+<!-- ── HERO ── -->
+<div class="hero">
+  <div class="hero-inner">
+    <p class="hero-eyebrow">// explain(explainPage) → explain(explainPage) → explain(explainPage) → …</p>
+
+    <h1 class="hero-title">An Explanation Page<br><em>Explained.</em></h1>
+
+    <p class="hero-subtitle">You are reading an explanation page. This explanation page explains what explanation pages are. Which means it is explaining itself. Which is this. Which you are reading.</p>
+
+    <div class="mirror-frame">
+      <div class="mirror-outer" onclick="zoomMirror()">
+        <div class="mirror-header">
+          <div class="dot dot-r"></div>
+          <div class="dot dot-y"></div>
+          <div class="dot dot-g"></div>
+          <div class="mirror-title-bar">An Explanation Page — Explained</div>
+        </div>
+        <canvas id="mirrorCanvas"></canvas>
+      </div>
+      <p class="mirror-hint">↑ click to go deeper</p>
+    </div>
+
+    <div class="scroll-cue">
+      <span>scroll to begin</span>
+      <div class="scroll-line"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ── CALL STACK ── -->
+<div class="stack-container">
+
+  <!-- Frame 0 -->
+  <div class="stack-frame" style="--depth:0; --frame-color:#4a9eff;">
+    <div class="frame-inner">
+      <div class="frame-marker"></div>
+      <div class="frame-tag">call #1 — explain(explanationPage)</div>
+      <h2>What is an explanation page?</h2>
+      <p class="body-text">An explanation page is a document whose purpose is to make something unfamiliar feel familiar. It takes a thing — an idea, a phenomenon, a process — and breaks it into smaller, digestible pieces, then reassembles them in the reader's mind.</p>
+      <p class="body-text">At its core, every explanation page has the same three jobs: <strong>introduce</strong> a subject, <strong>build understanding</strong> through structure, and <strong>leave the reader changed</strong> — knowing something they didn't before.</p>
+
+      <div class="anatomy">
+        <p class="anatomy-title">// anatomy of an explanation page</p>
+        <div class="page-mock">
+          <div class="mock-bar">
+            <div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div>
+          </div>
+          <div class="mock-content">
+            <div class="part">
+              <div class="part-bar" style="background:#c4432a"></div>
+              <div class="part-lines">
+                <div class="line-fake short" style="background:rgba(196,67,42,0.5)"></div>
+                <div class="line-fake full" style="height:14px;background:rgba(196,67,42,0.15)"></div>
+                <div class="line-fake med sm"></div>
+              </div>
+              <div class="part-label">Hero<span>grabs attention</span></div>
+            </div>
+            <div class="part">
+              <div class="part-bar" style="background:#4a9eff"></div>
+              <div class="part-lines">
+                <div class="line-fake short" style="background:rgba(74,158,255,0.4)"></div>
+                <div class="line-fake med sm"></div>
+                <div class="line-fake full sm"></div>
+                <div class="line-fake med sm"></div>
+              </div>
+              <div class="part-label">Context<span>gives you footing</span></div>
+            </div>
+            <div class="part">
+              <div class="part-bar" style="background:#f5c842"></div>
+              <div class="part-lines">
+                <div class="line-fake short" style="background:rgba(245,200,66,0.4)"></div>
+                <div class="line-fake full sm"></div>
+                <div class="line-fake full sm"></div>
+                <div class="line-fake med sm"></div>
+                <div class="line-fake full sm"></div>
+              </div>
+              <div class="part-label">The Meat<span>builds understanding</span></div>
+            </div>
+            <div class="part">
+              <div class="part-bar" style="background:#52c47a"></div>
+              <div class="part-lines">
+                <div class="line-fake short" style="background:rgba(82,196,122,0.4)"></div>
+                <div class="line-fake med sm"></div>
+                <div class="line-fake short sm"></div>
+              </div>
+              <div class="part-label">Resolution<span>lands the idea</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <p class="body-text">Notice that you just read an explanation page <em>explain what an explanation page is</em>. You are currently inside one. This is not a coincidence. This is the point.</p>
+    </div>
+  </div>
+
+  <div class="return-arrow" style="--depth:0">returning to caller…</div>
+
+  <!-- Frame 1 -->
+  <div class="stack-frame" style="--depth:1; --frame-color:#f5c842;">
+    <div class="frame-inner">
+      <div class="frame-marker"></div>
+      <div class="frame-tag">call #2 — explain(howExplanationWorks)</div>
+      <h2>But wait — to explain that,<br>we need to <em>explain</em> explaining.</h2>
+      <p class="body-text">Explaining is the act of translating a mental model from one mind to another. But to do that, we need to talk about what a mental model <span class="has-tip">is<div class="tip">A mental model is your internal map of how something works</div></span>. To talk about that, we need to understand how the brain builds concepts. To understand that, we need a bit of cognitive science. To understand that…</p>
+      <p class="body-text">You see the pattern forming. To fully explain anything, you eventually need to explain everything. This is the <strong>fundamental problem of explanation</strong>: the chain has no natural beginning.</p>
+
+      <div class="code-block">
+        <div class="code-label">pseudocode</div>
+<span class="kw">function</span> <span class="fn">explain</span>(<span class="arg">concept</span>) {
+  <span class="kw">const</span> prerequisites = <span class="fn">getPrerequisites</span>(<span class="arg">concept</span>)
+  <span class="kw">for</span> (<span class="kw">const</span> prereq <span class="kw">of</span> prerequisites) {
+    <span class="fn">explain</span>(prereq)  <span class="cm">// ← recursive call</span>
+  }
+  <span class="ret">return</span> <span class="fn">describe</span>(<span class="arg">concept</span>)
+}
+
+<span class="cm">// explain("sky is blue")
+//   → explain("light")
+//       → explain("photons")
+//           → explain("quantum mechanics")
+//               → explain("mathematics")
+//                   → explain("logic")
+//                       → explain("axioms")
+//                           → ∞</span>
+      </div>
+
+      <p class="body-text">Good explanation pages sidestep this by choosing an <strong>assumed baseline</strong> — a place where they stop digging and say "you already know this." Where to draw that line is the author's central design decision.</p>
+    </div>
+  </div>
+
+  <div class="return-arrow" style="--depth:1">returning to caller…</div>
+
+  <!-- Frame 2 -->
+  <div class="stack-frame" style="--depth:2; --frame-color:#c4432a;">
+    <div class="frame-inner">
+      <div class="frame-marker"></div>
+      <div class="frame-tag">call #3 — explain(recursion)</div>
+      <h2>This is <em>recursion.</em></h2>
+      <p class="body-text">What we just did — explaining explanation by explaining the explaining of explanation — is exactly what recursion is: a process that calls itself as part of its own definition.</p>
+      <p class="body-text">In computing, a recursive function is one that calls itself. In thinking, a recursive concept is one that refers to itself in its own definition. This page is a recursive object: an explanation page that explains itself.</p>
+
+      <div class="stack-viz">
+        <p class="stack-viz-title">// interactive call stack — try it</p>
+        <div class="viz-controls">
+          <button class="viz-btn push" onclick="pushFrame()">→ explain(deeper)</button>
+          <button class="viz-btn pop"  onclick="popFrame()">↩ return</button>
+          <button class="viz-btn reset" onclick="resetStack()">reset</button>
+        </div>
+        <div id="callStack"><div class="stack-empty">// call stack is empty</div></div>
+        <div id="stackLog"></div>
+      </div>
+
+      <p class="body-text">Every time you clicked "explain deeper," you added a new frame to the call stack. Every "return" removed one. Real recursive programs work exactly like this — but if nothing ever returns, the stack overflows.</p>
+    </div>
+  </div>
+
+  <div class="return-arrow" style="--depth:2">returning to caller…</div>
+
+  <!-- Frame 3 -->
+  <div class="stack-frame" style="--depth:3; --frame-color:#52c47a;">
+    <div class="frame-inner">
+      <div class="frame-marker"></div>
+      <div class="frame-tag">call #4 — explain(baseCase)</div>
+      <h2>Every recursion needs<br>a <em>base case.</em></h2>
+      <p class="body-text">Without a stopping condition, recursion spirals forever. The base case is the clause that says: "if we're here, we don't go deeper — we already know." It's what makes recursive processes finite and useful rather than infinite and catastrophic.</p>
+
+      <div class="code-block">
+<span class="kw">function</span> <span class="fn">explain</span>(<span class="arg">concept</span>) {
+  <span class="cm">// base case — stop here</span>
+  <span class="kw">if</span> (<span class="fn">audienceAlreadyUnderstands</span>(<span class="arg">concept</span>)) {
+    <span class="ret">return</span>  <span class="cm">// ← no deeper call</span>
+  }
+
+  <span class="cm">// recursive case</span>
+  <span class="kw">const</span> simpler = <span class="fn">simplify</span>(<span class="arg">concept</span>)
+  <span class="fn">explain</span>(simpler)  <span class="cm">// ← go one level deeper</span>
+  <span class="ret">return</span> <span class="fn">buildOn</span>(simpler, <span class="arg">concept</span>)
+}
+      </div>
+
+      <p class="body-text">For this explanation page, the base case is you. We assume you can read. We assume you know what a browser is. We stopped there. Those are our axioms — the things we don't explain, because we trust you already have them.</p>
+
+      <div style="text-align:center; margin-top: 2rem;">
+        <div class="base-case">
+          <div class="base-icon">🛑</div>
+          <div class="base-text">
+            <h3>base case for this page</h3>
+            <p>You can read English. You've seen a webpage before. You're curious about something. <strong>We don't explain those.</strong> We build on them.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="return-arrow" style="--depth:3">returning to caller…</div>
+  <div class="return-arrow" style="--depth:2">returning to caller…</div>
+  <div class="return-arrow" style="--depth:1">returning to caller…</div>
+  <div class="return-arrow" style="--depth:0">returning to caller…</div>
+
+</div>
+
+<!-- ── THE TWIST ── -->
+<div class="twist-section">
+  <div style="max-width:680px; margin: 0 auto;">
+    <p style="font-family:'JetBrains Mono',monospace;font-size:0.7rem;color:var(--red);letter-spacing:0.1em;margin-bottom:1rem;">// the punchline</p>
+    <h2>You just read an explanation<br>page <em>about</em> explanation pages.</h2>
+    <p class="body-text">Which means this page successfully explained itself. Which means it worked. Which means a page explaining what explanation pages are is itself a working example of an explanation page.</p>
+    <p class="body-text">This is what programmers call an <strong>elegant solution</strong>: the proof is also the example. The map is also the territory. The medium is also the message.</p>
+
+    <div class="droste-counter" id="drosteNum">∞</div>
+    <p style="font-family:'JetBrains Mono',monospace;font-size:0.7rem;color:rgba(255,255,255,0.2);margin-bottom:2rem;">levels of self-reference</p>
+
+    <div class="base-case" style="max-width:none;">
+      <div class="base-icon">💡</div>
+      <div class="base-text">
+        <h3>the meta-lesson</h3>
+        <p>Recursion isn't just a programming technique. It's a way of thinking. When you explain a concept using that very concept, you've written the most honest possible proof that you understand it.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── FOOTER ── -->
+<footer>
+  <p class="footer-title">explain(this page)</p>
+  <p class="footer-code">→ explain(explanation pages) → explain(explaining) → explain(recursion) → explain(base case) → <span style="color:var(--green)">return</span></p>
+  <p class="footer-note">You have reached the base case. No further explanation is necessary.<br>Stack successfully unwound. All frames returned.</p>
+</footer>
+
+<script>
+// ── MIRROR CANVAS (recursive page-within-page) ──
+(function() {
+  const canvas = document.getElementById('mirrorCanvas');
+  const ctx = canvas.getContext('2d');
+  let W, H, depth = 0, targetDepth = 0, t = 0;
+
+  function resize() {
+    W = canvas.offsetWidth || canvas.parentElement.offsetWidth || 480;
+    H = 260;
+    canvas.width = W * devicePixelRatio;
+    canvas.height = H * devicePixelRatio;
+    ctx.scale(devicePixelRatio, devicePixelRatio);
+  }
+
+  function drawMiniPage(x, y, w, h, level, maxLevel) {
+    if (w < 6 || h < 4 || level > maxLevel) return;
+
+    const alpha = Math.max(0.1, 1 - level * 0.18);
+    ctx.globalAlpha = alpha;
+
+    // Window chrome
+    ctx.fillStyle = '#16161e';
+    ctx.fillRect(x, y, w, h);
+
+    ctx.strokeStyle = `rgba(74,158,255,${0.4 - level * 0.05})`;
+    ctx.lineWidth = 1;
+    ctx.strokeRect(x + 0.5, y + 0.5, w - 1, h - 1);
+
+    // Title bar
+    const barH = Math.max(4, h * 0.13);
+    ctx.fillStyle = 'rgba(74,158,255,0.08)';
+    ctx.fillRect(x, y, w, barH);
+
+    // Dots
+    if (w > 40) {
+      const dotR = Math.min(2.5, w * 0.025);
+      const dotY = y + barH / 2;
+      [[x+8,'#ff5f57'],[x+8+dotR*3,'#ffbd2e'],[x+8+dotR*6,'#28c840']].forEach(([dx,dc]) => {
+        ctx.fillStyle = dc; ctx.globalAlpha = alpha * 0.7;
+        ctx.beginPath(); ctx.arc(dx, dotY, dotR, 0, Math.PI*2); ctx.fill();
+      });
+    }
+
+    ctx.globalAlpha = alpha;
+
+    // Content lines
+    const lineY = y + barH + h * 0.07;
+    const lineH = Math.max(1, h * 0.035);
+    const gap   = lineH * 2.2;
+    const lx    = x + w * 0.07;
+    const lw    = w * 0.86;
+    const lines = [
+      [lw * 0.3, '#c4432a'],
+      [lw * 0.9, 'rgba(255,255,255,0.18)'],
+      [lw * 0.75,'rgba(255,255,255,0.12)'],
+      [lw * 0.85,'rgba(255,255,255,0.1)'],
+    ];
+    lines.forEach(([llen, lc], i) => {
+      ctx.fillStyle = lc;
+      ctx.fillRect(lx, lineY + i * gap, llen, lineH);
+    });
+
+    // Nested page inside
+    const pad = w * 0.07;
+    const innerY = lineY + lines.length * gap + h * 0.06;
+    const innerH = Math.max(0, y + h - innerY - h * 0.05);
+    const innerW = w - pad * 2;
+
+    if (innerW > 10 && innerH > 8) {
+      drawMiniPage(x + pad, innerY, innerW, innerH, level + 1, maxLevel);
+    }
+  }
+
+  window.zoomMirror = function() {
+    targetDepth = Math.min(targetDepth + 1, 12);
+  };
+
+  let animDepth = 0;
+  function draw() {
+    ctx.clearRect(0, 0, W, H);
+    ctx.globalAlpha = 1;
+    t += 0.015;
+
+    animDepth += (targetDepth - animDepth) * 0.06;
+
+    const maxLevels = 4 + Math.floor(animDepth * 1.2);
+    const scale = 1 + animDepth * 0.3;
+    const tx = W / 2 - (W / 2) * scale;
+    const ty = H / 2 - (H / 2) * scale;
+
+    ctx.save();
+    ctx.translate(tx, ty);
+    ctx.scale(scale, scale);
+    drawMiniPage(8, 8, W - 16, H - 16, 0, maxLevels);
+    ctx.restore();
+    ctx.globalAlpha = 1;
+
+    requestAnimationFrame(draw);
+  }
+
+  window.addEventListener('resize', resize);
+  resize();
+  draw();
+})();
+
+// ── SCROLL REVEAL ──
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); } });
+}, { threshold: 0.1 });
+document.querySelectorAll('.stack-frame').forEach(el => observer.observe(el));
+
+// ── CALL STACK VISUALIZER ──
+const SUBJECTS = [
+  'explanationPage', 'explanation', 'understanding', 'meaning',
+  'cognition', 'neuralPatterns', 'chemistry', 'physics',
+  'mathematics', 'logic', 'axioms', 'truth', 'existence', '???'
+];
+let stackFrames = [];
+
+function renderStack() {
+  const el = document.getElementById('callStack');
+  if (stackFrames.length === 0) {
+    el.innerHTML = '<div class="stack-empty">// call stack is empty</div>';
+    return;
+  }
+  el.innerHTML = stackFrames.map((f, i) => {
+    const isTop = i === stackFrames.length - 1;
+    return `<div class="frame-card ${isTop ? 'top' : ''}" id="frame-${i}">
+      <span class="frame-name">explain(<span style="color:${isTop?'#f5c842':'rgba(255,255,255,0.5)'}">\"${f}\"</span>)</span>
+      <span class="frame-depth">depth ${i}</span>
+    </div>`;
+  }).join('');
+}
+
+function setLog(msg) {
+  document.getElementById('stackLog').textContent = '// ' + msg;
+}
+
+window.pushFrame = function() {
+  if (stackFrames.length >= 10) {
+    setLog('💥 Stack overflow! Add a base case!');
+    const frames = document.querySelectorAll('.frame-card');
+    frames.forEach(f => { f.style.borderLeftColor = '#c4432a'; });
+    return;
+  }
+  const subject = SUBJECTS[Math.min(stackFrames.length, SUBJECTS.length - 1)];
+  stackFrames.push(subject);
+  renderStack();
+  if (stackFrames.length >= 8) setLog(`Warning: stack depth ${stackFrames.length} — when does this end?`);
+  else setLog(`Calling explain("${subject}") — added frame at depth ${stackFrames.length - 1}`);
+};
+
+window.popFrame = function() {
+  if (stackFrames.length === 0) { setLog('Nothing to return from!'); return; }
+  const frame = document.getElementById(`frame-${stackFrames.length - 1}`);
+  if (frame) { frame.classList.add('returning'); setTimeout(() => { stackFrames.pop(); renderStack(); }, 200); }
+  else { stackFrames.pop(); renderStack(); }
+  setLog(`Returned from depth ${stackFrames.length} — frame removed`);
+};
+
+window.resetStack = function() {
+  stackFrames = [];
+  renderStack();
+  setLog('Stack cleared. Ready to recurse.');
+};
+
+// ── DROSTE NUMBER ANIMATION ──
+(function() {
+  const el = document.getElementById('drosteNum');
+  const symbols = ['∞', '∞', '∞', 'n', 'n+1', 'f(f(f(…)))','∞'];
+  let i = 0;
+  setInterval(() => {
+    el.style.opacity = '0';
+    setTimeout(() => {
+      el.textContent = symbols[i++ % symbols.length];
+      el.style.opacity = '0.12';
+    }, 300);
+  }, 1800);
+  el.style.transition = 'opacity 0.3s';
+})();
+</script>
+</body>
+</html>
